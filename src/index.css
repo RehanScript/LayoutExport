@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --shadow-neubrutalism-sm: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-neubrutalism-md: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-neubrutalism-lg: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-neubrutalism-btn: 3px 3px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-neubrutalism-btn-hover: 1.5px 1.5px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-neubrutalism-card: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+  
+  --font-sans: 'Inter', sans-serif;
+  --font-heading: 'Outfit', sans-serif;
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased;
+  }
+}
+
+/* Glassmorphism utility classes */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-effect-dark {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Custom Scrollbar for sleek Linear dark aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.25);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.45);
+}
