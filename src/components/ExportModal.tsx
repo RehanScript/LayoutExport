@@ -9,7 +9,9 @@ interface ExportModalProps {
 }
 
 export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClose }) => {
-  const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<'code' | 'styles'>('code');
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedStyles, setCopiedStyles] = useState(false);
 
   if (!isOpen) return null;
 
@@ -586,10 +588,73 @@ export default function StartupLandingPage() {
 
   const codeText = generateExportCode();
 
-  const handleCopy = () => {
+  const stylesText = `/* LayoutExport Style Configuration */
+
+/* Option A: For Tailwind CSS v4 (e.g. Next.js 15 app/globals.css) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+@theme {
+  --shadow-neubrutalism-sm: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-neubrutalism-md: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-neubrutalism-lg: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-neubrutalism-btn: 3px 3px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-neubrutalism-btn-hover: 1.5px 1.5px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-neubrutalism-card: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+  
+  --font-sans: 'Inter', sans-serif;
+  --font-heading: 'Outfit', sans-serif;
+}
+
+/* Glassmorphism helpers (for Glass theme) */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-effect-dark {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+
+/* ---------------------------------------------------- */
+
+
+/* Option B: For Tailwind CSS v3 (e.g. Next.js 13/14 tailwind.config.js) */
+module.exports = {
+  theme: {
+    extend: {
+      boxShadow: {
+        'neubrutalism-sm': '2px 2px 0px 0px rgba(0, 0, 0, 1)',
+        'neubrutalism-md': '4px 4px 0px 0px rgba(0, 0, 0, 1)',
+        'neubrutalism-lg': '8px 8px 0px 0px rgba(0, 0, 0, 1)',
+        'neubrutalism-btn': '3px 3px 0px 0px rgba(0, 0, 0, 1)',
+        'neubrutalism-btn-hover': '1.5px 1.5px 0px 0px rgba(0, 0, 0, 1)',
+        'neubrutalism-card': '6px 6px 0px 0px rgba(0, 0, 0, 1)',
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        heading: ['Outfit', 'sans-serif'],
+      }
+    }
+  }
+}
+`;
+
+  const handleCopyCode = () => {
     navigator.clipboard.writeText(codeText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  const handleCopyStyles = () => {
+    navigator.clipboard.writeText(stylesText);
+    setCopiedStyles(true);
+    setTimeout(() => setCopiedStyles(false), 2000);
   };
 
   const handleDownload = () => {
@@ -606,13 +671,13 @@ export default function StartupLandingPage() {
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-zinc-950 border border-zinc-850 rounded-xl w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl">
+      <div className="bg-zinc-950 border border-zinc-850 rounded-xl w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
         
         {/* Modal Header */}
         <div className="p-4 border-b border-zinc-900 flex justify-between items-center bg-zinc-900/20">
           <div>
             <h3 className="text-base font-black text-white">Next.js + Tailwind CSS Code Export</h3>
-            <p className="text-xs text-zinc-500">Fully self-contained component, ready to paste in Vercel/Netlify setups.</p>
+            <p className="text-xs text-zinc-500">Fully self-contained component and styles ready to drop into your setup.</p>
           </div>
           <button
             onClick={onClose}
@@ -622,31 +687,92 @@ export default function StartupLandingPage() {
           </button>
         </div>
 
+        {/* Tab Headers */}
+        <div className="flex border-b border-zinc-900 bg-zinc-950 px-4">
+          <button
+            onClick={() => setActiveTab('code')}
+            className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${
+              activeTab === 'code'
+                ? 'border-indigo-500 text-white'
+                : 'border-transparent text-zinc-500 hover:text-zinc-350'
+            }`}
+          >
+            1. Component Code (TSX)
+          </button>
+          <button
+            onClick={() => setActiveTab('styles')}
+            className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${
+              activeTab === 'styles'
+                ? 'border-indigo-500 text-white'
+                : 'border-transparent text-zinc-500 hover:text-zinc-350'
+            }`}
+          >
+            2. Tailwind Config / Styles (CSS)
+          </button>
+        </div>
+
         {/* Code Content Preview */}
         <div className="flex-grow overflow-auto p-4 bg-zinc-950">
-          <pre className="text-xs font-mono text-zinc-300 p-4 bg-zinc-900/40 border border-zinc-900 rounded-lg overflow-x-auto leading-relaxed select-all whitespace-pre">
-            {codeText}
-          </pre>
+          {activeTab === 'code' ? (
+            <pre className="text-xs font-mono text-zinc-300 p-4 bg-zinc-900/40 border border-zinc-900 rounded-lg overflow-x-auto leading-relaxed select-all whitespace-pre">
+              {codeText}
+            </pre>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-xs text-zinc-400 bg-indigo-950/20 border border-indigo-900/30 p-3.5 rounded-lg leading-relaxed">
+                💡 **Styling Setup Guide**: LayoutExport utilizes custom shadows and glassmorphic utilities that aren't part of Tailwind's core library. Copy and paste the styles below into your main CSS file (Tailwind v4) or config file (Tailwind v3).
+              </p>
+              <pre className="text-xs font-mono text-zinc-300 p-4 bg-zinc-900/40 border border-zinc-900 rounded-lg overflow-x-auto leading-relaxed select-all whitespace-pre">
+                {stylesText}
+              </pre>
+            </div>
+          )}
         </div>
 
         {/* Modal Actions */}
         <div className="p-4 border-t border-zinc-900 bg-zinc-950 flex flex-col sm:flex-row justify-end gap-3">
-          <button
-            onClick={handleCopy}
-            className={`px-5 py-2.5 font-bold text-xs rounded transition-all flex items-center justify-center gap-1.5 ${
-              copied
-                ? 'bg-emerald-600 text-white'
-                : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-200'
-            }`}
-          >
-            {copied ? 'Copied to Clipboard! ✓' : 'Copy Code'}
-          </button>
-          <button
-            onClick={handleDownload}
-            className="px-5 py-2.5 bg-indigo-650 hover:bg-indigo-600 text-white font-bold text-xs rounded shadow transition-all hover:scale-[1.01]"
-          >
-            Download StartupLandingPage.tsx
-          </button>
+          {activeTab === 'code' ? (
+            <>
+              <button
+                onClick={handleCopyCode}
+                className={`px-5 py-2.5 font-bold text-xs rounded transition-all flex items-center justify-center gap-1.5 ${
+                  copiedCode
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-200'
+                }`}
+              >
+                {copiedCode ? 'Copied to Clipboard! ✓' : 'Copy Code'}
+              </button>
+              <button
+                onClick={handleDownload}
+                className="px-5 py-2.5 bg-indigo-650 hover:bg-indigo-600 text-white font-bold text-xs rounded shadow transition-all hover:scale-[1.01]"
+              >
+                Download StartupLandingPage.tsx
+              </button>
+              <a
+                href="https://vercel.com/new/clone?repository-url=https://github.com/RehanScript/LayoutExport"
+                target="_blank"
+                rel="noreferrer"
+                className="px-5 py-2.5 bg-black hover:bg-zinc-900 border border-zinc-855 text-white font-bold text-xs rounded shadow transition-all hover:scale-[1.01] flex items-center justify-center gap-2"
+              >
+                <svg className="w-3 h-3 fill-white" viewBox="0 0 115 100">
+                  <path d="M57.5 0L115 100H0L57.5 0Z" />
+                </svg>
+                Deploy to Vercel
+              </a>
+            </>
+          ) : (
+            <button
+              onClick={handleCopyStyles}
+              className={`px-5 py-2.5 font-bold text-xs rounded transition-all flex items-center justify-center gap-1.5 ${
+                copiedStyles
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-200'
+              }`}
+            >
+              {copiedStyles ? 'Styles Copied! ✓' : 'Copy Styling Config'}
+            </button>
+          )}
         </div>
 
       </div>

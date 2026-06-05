@@ -4,7 +4,7 @@ import type { ThemePreset, ColorPalette } from '../types/landingPage';
 export const COLOR_PALETTES: ColorPalette[] = [
   {
     id: 'linear-dark-emerald',
-    name: 'Midnight Emerald (Linear)',
+    name: 'Midnight Emerald (Shadcn)',
     background: 'bg-zinc-950',
     text: 'text-zinc-100',
     primary: 'bg-emerald-400 text-zinc-950 hover:bg-emerald-300',
@@ -17,7 +17,7 @@ export const COLOR_PALETTES: ColorPalette[] = [
   },
   {
     id: 'linear-dark-blue',
-    name: 'Electric Blue (Linear)',
+    name: 'Electric Blue (Shadcn)',
     background: 'bg-slate-950',
     text: 'text-slate-100',
     primary: 'bg-blue-500 text-white hover:bg-blue-400',
@@ -30,7 +30,7 @@ export const COLOR_PALETTES: ColorPalette[] = [
   },
   {
     id: 'linear-dark-violet',
-    name: 'Neon Sunset (Linear)',
+    name: 'Neon Sunset (Shadcn)',
     background: 'bg-zinc-950',
     text: 'text-zinc-100',
     primary: 'bg-violet-500 text-white hover:bg-violet-400',
@@ -228,45 +228,45 @@ export function getThemeClasses(theme: ThemePreset, palette: ColorPalette): Them
     }
 
     case 'glassmorphism': {
-      const btnPrimaryClass = `px-6 py-3 text-xs font-bold tracking-wider rounded-full hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-center inline-block cursor-pointer border ${palette.primary}`;
-      const btnSecondaryClass = `px-6 py-3 text-xs font-bold tracking-wider rounded-full hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-center inline-block cursor-pointer border ${palette.secondary}`;
+      const btnPrimaryClass = `px-6 py-3 text-xs font-bold rounded-full border border-white/20 bg-white/10 hover:bg-white/20 backdrop-blur-sm shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-center inline-block cursor-pointer text-white`;
+      const btnSecondaryClass = `px-6 py-3 text-xs font-bold rounded-full border border-white/10 bg-transparent hover:bg-white/5 text-white/80 hover:text-white backdrop-blur-sm transition-all duration-300 text-center inline-block cursor-pointer`;
 
       return {
-        globalBg: `${palette.background} relative overflow-hidden`,
+        globalBg: `${palette.background} relative overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-950 via-indigo-950/40 to-slate-950`,
         globalText: textColor,
         headingText: `${headingColor} font-extrabold tracking-tight font-heading`,
         subtleText: subtleColor,
-        card: `rounded-3xl border border-white/10 backdrop-blur-md shadow-2xl p-6 ${palette.cardBg}`,
+        card: `backdrop-blur-md bg-white/[0.03] border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] rounded-3xl p-6`,
         buttonPrimary: btnPrimaryClass,
         buttonSecondary: btnSecondaryClass,
-        borderColor: 'border-white/10',
-        badge: `inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-full border border-white/10 backdrop-blur-sm bg-white/5 ${textColor}`,
-        tableHeader: 'border-b border-white/10 bg-white/5 p-4 text-left font-semibold text-white',
-        tableCell: `border-b border-white/5 p-4 bg-transparent ${textColor}`,
-        faqItem: 'border border-white/10 bg-white/5 hover:bg-white/10 rounded-2xl transition-all duration-300 p-6',
-        inputField: `w-full px-4 py-3 border border-white/10 bg-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/20 backdrop-blur-sm ${textColor}`,
+        borderColor: 'border-white/[0.08]',
+        badge: `inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-full border border-white/[0.08] backdrop-blur-md bg-white/[0.04] text-white/90`,
+        tableHeader: 'border-b border-white/[0.08] bg-white/[0.05] backdrop-blur-sm p-4 text-left font-semibold text-white',
+        tableCell: `border-b border-white/[0.04] p-4 bg-transparent text-white/85`,
+        faqItem: 'border border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.05] backdrop-blur-sm rounded-2xl transition-all duration-300 p-6',
+        inputField: `w-full px-4 py-3 border border-white/[0.08] bg-white/[0.02] rounded-xl focus:outline-none focus:ring-2 focus:ring-white/20 backdrop-blur-md ${textColor}`,
       };
     }
 
     case 'linear':
     default: {
-      const btnPrimaryClass = `px-5 py-2.5 text-xs font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] text-center inline-block cursor-pointer duration-200 ${palette.primary}`;
-      const btnSecondaryClass = `px-5 py-2.5 text-xs font-bold rounded-xl border border-zinc-800 hover:border-zinc-700 transition-all text-center inline-block cursor-pointer hover:scale-[1.01] active:scale-[0.99] duration-200 ${palette.secondary}`;
+      const btnPrimaryClass = `px-4 py-2 text-xs font-medium rounded-md transition-all hover:opacity-90 shadow text-center inline-block cursor-pointer duration-200 ${palette.primary}`;
+      const btnSecondaryClass = `px-4 py-2 text-xs font-medium rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent text-zinc-900 dark:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-900/50 shadow-sm transition-all text-center inline-block cursor-pointer duration-200`;
 
       return {
         globalBg: palette.background,
         globalText: textColor,
-        headingText: `${headingColor} font-bold tracking-tight font-heading`,
+        headingText: `${headingColor} font-semibold tracking-tight font-heading`,
         subtleText: subtleColor,
-        card: `rounded-2xl border ${palette.borderColor} p-6 ${palette.cardBg}`,
+        card: `rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-sm p-6`,
         buttonPrimary: btnPrimaryClass,
         buttonSecondary: btnSecondaryClass,
-        borderColor: palette.borderColor,
-        badge: `inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border ${palette.borderColor} ${palette.cardBg} ${textColor}`,
-        tableHeader: `border-b ${palette.borderColor} bg-zinc-900/60 p-4 text-left font-semibold ${headingColor}`,
-        tableCell: `border-b ${palette.borderColor} p-4 bg-transparent ${textColor}`,
-        faqItem: `border ${palette.borderColor} ${palette.cardBg} rounded-xl p-6`,
-        inputField: `w-full px-4 py-3 border ${palette.borderColor} ${palette.cardBg} rounded-xl focus:outline-none focus:ring-1 focus:ring-zinc-600 ${textColor}`,
+        borderColor: 'border-zinc-200 dark:border-zinc-800',
+        badge: `inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-semibold rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 uppercase tracking-wider`,
+        tableHeader: `border-b border-zinc-250 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 p-3 text-left font-semibold ${headingColor}`,
+        tableCell: `border-b border-zinc-150 dark:border-zinc-900 p-3 bg-transparent ${textColor}`,
+        faqItem: `border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 rounded-lg p-5`,
+        inputField: `w-full px-3 py-2 border border-zinc-200 dark:border-zinc-800 rounded-md focus:outline-none focus:ring-1 focus:ring-zinc-400 bg-white dark:bg-zinc-950 ${textColor}`,
       };
     }
   }

@@ -35,6 +35,13 @@ function App() {
     localStorage.setItem('mvp_page_config', JSON.stringify(config));
   }, [config]);
 
+  const handleUpdateSectionData = (sectionId: string, newData: any) => {
+    setConfig((prev) => ({
+      ...prev,
+      sections: prev.sections.map((s) => (s.id === sectionId ? { ...s, data: newData } : s)),
+    }));
+  };
+
   const activePalette = COLOR_PALETTES.find((p) => p.id === config.paletteId) || COLOR_PALETTES[0];
 
   return (
@@ -100,6 +107,7 @@ function App() {
                 isActive={activeSectionId === sect.id}
                 onSelect={() => !isPreviewOnly && setActiveSectionId(sect.id)}
                 isPreviewOnly={isPreviewOnly}
+                onUpdateSectionData={handleUpdateSectionData}
               />
             ))}
 

@@ -23,6 +23,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const { theme, paletteId, sections } = config;
   const activeSection = sections.find((s) => s.id === activeSectionId);
+  const [draggedIdx, setDraggedIdx] = React.useState<number | null>(null);
 
   // Helper to update global config values
   const setGlobalStyle = (newTheme: ThemePreset, newPaletteId: string) => {
@@ -33,22 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     });
   };
 
-  // Move section in list
-  const moveSection = (index: number, direction: 'up' | 'down') => {
-    if (direction === 'up' && index === 0) return;
-    if (direction === 'down' && index === sections.length - 1) return;
 
-    const newSections = [...sections];
-    const targetIdx = direction === 'up' ? index - 1 : index + 1;
-    const temp = newSections[index];
-    newSections[index] = newSections[targetIdx];
-    newSections[targetIdx] = temp;
-
-    onChangeConfig({
-      ...config,
-      sections: newSections,
-    });
-  };
 
   // Delete section
   const deleteSection = (id: string, e: React.MouseEvent) => {
@@ -267,6 +253,56 @@ export const Sidebar: React.FC<SidebarProps> = ({
             value={value || ''}
             onChange={(e) => updateSectionData({ [fieldName]: e.target.value })}
           />
+        </div>
+      );
+    };
+
+    const renderImageInput = (
+      label: string,
+      value: string,
+      onChangeCallback: (base64OrUrl: string) => void
+    ) => {
+      const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+      const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64String = reader.result as string;
+            onChangeCallback(base64String);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+
+      return (
+        <div className="mb-4">
+          <label className="block text-xs font-bold text-zinc-400 mb-1 uppercase tracking-wider">{label}</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              className="flex-grow bg-zinc-900 border border-zinc-800 rounded px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-zinc-650"
+              placeholder="Paste image URL..."
+              value={value || ''}
+              onChange={(e) => onChangeCallback(e.target.value)}
+            />
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept="image/*"
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-750 border border-zinc-700 hover:border-zinc-600 text-zinc-300 text-xs font-bold rounded flex items-center justify-center transition-all"
+              title="Upload local PNG, JPG, or SVG"
+            >
+              Upload
+            </button>
+          </div>
         </div>
       );
     };
@@ -853,15 +889,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       />
                     </div>
                   </div>
-                  <div className="mb-2">
-                    <label className="block text-[10px] font-bold text-zinc-500 uppercase">Avatar Image URL</label>
-                    <input
-                      type="text"
-                      className="w-full bg-zinc-955 border border-zinc-855 rounded px-2.5 py-1 text-xs text-zinc-200 focus:outline-none"
-                      value={test.avatarUrl || ''}
-                      onChange={(e) => updateTest(idx, { avatarUrl: e.target.value })}
-                    />
-                  </div>
+                  {renderImageInput('Avatar Image', test.avatarUrl, (val) => updateTest(idx, { avatarUrl: val }))}
                   <div>
                     <label className="block text-[10px] font-bold text-zinc-500 uppercase">Feedback Quotes</label>
                     <textarea
@@ -949,7 +977,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {renderInput('Full Name', data.name, 'name')}
             {renderInput('Role / Title', data.role, 'role')}
             {renderTextarea('Bio Paragraph', data.bio, 'bio')}
-            {renderInput('Avatar image URL', data.avatarUrl, 'avatarUrl')}
+            {renderImageInput('Avatar Image', data.avatarUrl, (val) => updateSectionData({ avatarUrl: val }))}
             
             <div className="border-t border-zinc-800 my-4 pt-4">
               <h4 className="text-sm font-semibold text-zinc-300 mb-3">Social Handles</h4>
@@ -1069,7 +1097,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     : 'text-zinc-500 hover:text-zinc-300'
                 }`}
               >
-                {t === 'neubrutalism' ? 'Neubrutalism' : t === 'glassmorphism' ? 'Glass' : 'Linear'}
+                {t === 'neubrutalism' ? 'Neubrutalism' : t === 'glassmorphism' ? 'Glass' : 'Minimalist'}
               </button>
             ))}
           </div>
@@ -1104,40 +1132,57 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div
                 key={sect.id}
                 onClick={() => onSelectSectionId(sect.id)}
+                draggable
+                onDragStart={(e) => {
+                  setDraggedIdx(idx);
+                  e.dataTransfer.effectAllowed = 'move';
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                }}
+                onDragEnter={() => {
+                  if (draggedIdx !== null && draggedIdx !== idx) {
+                    const newSections = [...sections];
+                    const temp = newSections[draggedIdx];
+                    newSections[draggedIdx] = newSections[idx];
+                    newSections[idx] = temp;
+                    onChangeConfig({
+                      ...config,
+                      sections: newSections,
+                    });
+                    setDraggedIdx(idx);
+                  }
+                }}
+                onDragEnd={() => {
+                  setDraggedIdx(null);
+                }}
                 className={`p-2 border rounded flex justify-between items-center cursor-pointer transition-all ${
+                  draggedIdx === idx ? 'opacity-40 border-dashed border-indigo-500 bg-zinc-900/50' : ''
+                } ${
                   activeSectionId === sect.id
                     ? 'bg-indigo-950/20 border-indigo-900/50 text-zinc-250 ring-1 ring-indigo-500/10'
                     : 'bg-zinc-900/30 border-zinc-900 text-zinc-400 hover:bg-zinc-900/60'
                 }`}
               >
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-zinc-650 font-bold w-4">#{idx + 1}</span>
+                <div className="flex items-center gap-2.5">
+                  {/* Drag Grip Icon */}
+                  <svg className="w-3 h-3 text-zinc-650 cursor-grab active:cursor-grabbing shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <circle cx="9" cy="5" r="1.5" fill="currentColor"/>
+                    <circle cx="9" cy="12" r="1.5" fill="currentColor"/>
+                    <circle cx="9" cy="19" r="1.5" fill="currentColor"/>
+                    <circle cx="15" cy="5" r="1.5" fill="currentColor"/>
+                    <circle cx="15" cy="12" r="1.5" fill="currentColor"/>
+                    <circle cx="15" cy="19" r="1.5" fill="currentColor"/>
+                  </svg>
+                  <span className="text-[10px] text-zinc-600 font-bold">#{idx + 1}</span>
                   <span className="text-xs font-semibold capitalize">{sect.type.replace('-', ' ')}</span>
                 </div>
 
                 <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-                  {/* Move Up */}
-                  <button
-                    disabled={idx === 0}
-                    onClick={() => moveSection(idx, 'up')}
-                    className="p-1 bg-zinc-900 border border-zinc-850 hover:bg-zinc-800 text-zinc-500 hover:text-zinc-200 disabled:opacity-30 disabled:pointer-events-none rounded"
-                    title="Move Up"
-                  >
-                    ▲
-                  </button>
-                  {/* Move Down */}
-                  <button
-                    disabled={idx === sections.length - 1}
-                    onClick={() => moveSection(idx, 'down')}
-                    className="p-1 bg-zinc-900 border border-zinc-850 hover:bg-zinc-800 text-zinc-500 hover:text-zinc-200 disabled:opacity-30 disabled:pointer-events-none rounded"
-                    title="Move Down"
-                  >
-                    ▼
-                  </button>
                   {/* Delete */}
                   <button
                     onClick={(e) => deleteSection(sect.id, e)}
-                    className="p-1 bg-zinc-900 border border-zinc-850 hover:bg-zinc-800 hover:text-rose-500 text-zinc-500 rounded"
+                    className="w-5 h-5 flex items-center justify-center bg-zinc-900/60 border border-zinc-850 hover:bg-rose-950/40 hover:border-rose-900/50 hover:text-rose-400 text-zinc-550 rounded-full transition-all"
                     title="Delete"
                   >
                     ✕
