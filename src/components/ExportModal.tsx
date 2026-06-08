@@ -173,7 +173,34 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
 `;
           break;
 
-        case 'why-choose-us':
+        case 'why-choose-us': {
+          const headers = data.headers || ['Feature', 'Our Solution', 'Competitors'];
+          const headersHtml = headers.map((header: string, hIdx: number) => `
+                <th className="${c.tableHeader} ${hIdx === 0 ? 'text-left' : 'text-center'} font-semibold p-4">${header}</th>`).join('');
+
+          const rowsHtml = data.rows.map((row: any) => {
+            const rowValues = row.values || [
+              row.usValue !== undefined ? row.usValue : true,
+              row.themValue !== undefined ? row.themValue : false
+            ];
+            const cellsHtml = rowValues.map((val: any) => `
+                <td className="${c.tableCell} text-center font-medium p-4">
+                  ${
+                    typeof val === 'boolean'
+                      ? val
+                        ? '<span className="text-emerald-500 inline-block font-black text-xl">✓</span>'
+                        : '<span className="text-rose-500 inline-block font-black text-xl">✗</span>'
+                      : `<span className="${c.globalText}">${val}</span>`
+                  }
+                </td>`).join('');
+
+            return `
+              <tr>
+                <td className="${c.tableCell} font-semibold text-left p-4">${row.feature}</td>
+                ${cellsHtml}
+              </tr>`;
+          }).join('');
+
           componentsJsx += `
       {/* Why Choose Us Section */}
       <section className="py-16 md:py-24 px-6 max-w-5xl mx-auto">
@@ -190,38 +217,11 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
           <table className="w-full border-collapse">
             <thead>
               <tr>
-                <th className="${c.tableHeader}">Feature</th>
-                <th className="${c.tableHeader}">Our Solution</th>
-                <th className="${c.tableHeader}">Competitors</th>
+                ${headersHtml}
               </tr>
             </thead>
             <tbody>
-              ${data.rows
-                .map(
-                  (row: any) => `
-              <tr>
-                <td className="${c.tableCell} font-semibold text-left">${row.feature}</td>
-                <td className="${c.tableCell} text-center font-medium">
-                  ${
-                    typeof row.usValue === 'boolean'
-                      ? row.usValue
-                        ? '<span className="text-emerald-500 inline-block font-black text-xl">✓</span>'
-                        : '<span className="text-rose-500 inline-block font-black text-xl">✗</span>'
-                      : `<span className="${c.globalText}">${row.usValue}</span>`
-                  }
-                </td>
-                <td className="${c.tableCell} text-center font-medium opacity-70">
-                  ${
-                    typeof row.themValue === 'boolean'
-                      ? row.themValue
-                        ? '<span className="text-emerald-500 inline-block font-black text-xl">✓</span>'
-                        : '<span className="text-rose-500 inline-block font-black text-xl">✗</span>'
-                      : `<span className="${c.globalText}">${row.themValue}</span>`
-                  }
-                </td>
-              </tr>`
-                )
-                .join('')}
+              ${rowsHtml}
             </tbody>
           </table>
         </div>`
@@ -253,6 +253,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
       </section>
 `;
           break;
+        }
 
         case 'features':
           componentsJsx += `

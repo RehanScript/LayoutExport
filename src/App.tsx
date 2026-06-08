@@ -90,6 +90,14 @@ function App() {
             >
               {isPreviewOnly ? 'Exit Preview' : 'Preview Live Page'}
             </button>
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLScoPJIrdsJ4DVOZm2ZWaTQX4TWIoi2v4y0ap4YA56m2IQv3NQ/viewform?usp=sharing&ouid=110472994291449701441"
+              target="_blank"
+              rel="noreferrer"
+              className="px-3.5 py-1.5 bg-indigo-650 hover:bg-indigo-600 text-white font-bold text-xs rounded transition-all flex items-center shadow-sm"
+            >
+              Give Feedback
+            </a>
           </div>
         </div>
 

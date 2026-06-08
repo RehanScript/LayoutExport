@@ -277,30 +277,73 @@ export const SectionRenderer: React.FC<SectionRendererProps> = ({
                 <table className="w-full border-collapse">
                   <thead>
                     <tr>
-                      <th className={c.tableHeader}>Feature</th>
-                      <th className={c.tableHeader}>Our Solution</th>
-                      <th className={c.tableHeader}>Competitors</th>
+                      {(data.headers || ['Feature', 'Our Solution', 'Competitors']).map((header: string, hIdx: number) => (
+                        <th 
+                          key={hIdx} 
+                          className={`${c.tableHeader} ${hIdx === 0 ? 'text-left' : 'text-center'} font-semibold p-4`}
+                        >
+                          <EditableText
+                            value={header}
+                            onChange={(val) => {
+                              const currentHeaders = data.headers || ['Feature', 'Our Solution', 'Competitors'];
+                              const newHeaders = [...currentHeaders];
+                              newHeaders[hIdx] = val;
+                              updateProp('headers', newHeaders as any);
+                            }}
+                            isEditable={isEditable}
+                          />
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {data.rows.map((row: any, idx: number) => (
-                      <tr key={idx}>
-                        <td className={`${c.tableCell} font-semibold text-left`}>
-                          <EditableText
-                            tagName="span"
-                            value={row.feature}
-                            onChange={(val) => updateArrayProp('rows', idx, 'feature', val)}
-                            isEditable={isEditable}
-                          />
-                        </td>
-                        <td className={`${c.tableCell} text-center font-medium`}>
-                          <ComparisonValue value={row.usValue} themeClasses={c} />
-                        </td>
-                        <td className={`${c.tableCell} text-center font-medium opacity-70`}>
-                          <ComparisonValue value={row.themValue} themeClasses={c} />
-                        </td>
-                      </tr>
-                    ))}
+                    {data.rows.map((row: any, idx: number) => {
+                      const rowValues = row.values || [
+                        row.usValue !== undefined ? row.usValue : true,
+                        row.themValue !== undefined ? row.themValue : false
+                      ];
+                      return (
+                        <tr key={idx}>
+                          <td className={`${c.tableCell} font-semibold text-left p-4`}>
+                            <EditableText
+                              tagName="span"
+                              value={row.feature}
+                              onChange={(val) => updateArrayProp('rows', idx, 'feature', val)}
+                              isEditable={isEditable}
+                            />
+                          </td>
+                          {rowValues.map((val: any, valIdx: number) => (
+                            <td key={valIdx} className={`${c.tableCell} text-center font-medium p-4`}>
+                              {typeof val === 'string' ? (
+                                <EditableText
+                                  tagName="span"
+                                  value={val}
+                                  onChange={(newVal) => {
+                                    const newVals = [...rowValues];
+                                    newVals[valIdx] = newVal;
+                                    updateArrayProp('rows', idx, 'values', newVals as any);
+                                  }}
+                                  isEditable={isEditable}
+                                />
+                              ) : (
+                                <div
+                                  className={`${isEditable ? 'cursor-pointer' : ''} inline-block`}
+                                  onClick={() => {
+                                    if (isEditable) {
+                                      const newVals = [...rowValues];
+                                      newVals[valIdx] = !val;
+                                      updateArrayProp('rows', idx, 'values', newVals as any);
+                                    }
+                                  }}
+                                >
+                                  <ComparisonValue value={val} themeClasses={c} />
+                                </div>
+                              )}
+                            </td>
+                          ))}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

@@ -393,14 +393,59 @@ export const Sidebar: React.FC<SidebarProps> = ({
       }
 
       case 'why-choose-us': {
+        const headers = data.headers || ['Feature', 'Our Solution', 'Competitors'];
+
+        const updateHeader = (hIdx: number, val: string) => {
+          const newHeaders = [...headers];
+          newHeaders[hIdx] = val;
+          updateSectionData({ headers: newHeaders });
+        };
+
+        const addCompetitorColumn = () => {
+          const newHeaders = [...headers, 'New Competitor'];
+          const newRows = data.rows.map((row: any) => {
+            const rowValues = row.values || [
+              row.usValue !== undefined ? row.usValue : true,
+              row.themValue !== undefined ? row.themValue : false
+            ];
+            return {
+              ...row,
+              values: [...rowValues, false]
+            };
+          });
+          updateSectionData({ headers: newHeaders, rows: newRows });
+        };
+
+        const removeCompetitorColumn = (colIdx: number) => {
+          if (headers.length <= 2) return; // Must have at least Feature + Our Solution
+          const newHeaders = headers.filter((_: string, i: number) => i !== colIdx);
+          const valIdxToRemove = colIdx - 1; // rowValues indices are offset by 1
+          const newRows = data.rows.map((row: any) => {
+            const rowValues = row.values || [
+              row.usValue !== undefined ? row.usValue : true,
+              row.themValue !== undefined ? row.themValue : false
+            ];
+            return {
+              ...row,
+              values: rowValues.filter((_: any, i: number) => i !== valIdxToRemove)
+            };
+          });
+          updateSectionData({ headers: newHeaders, rows: newRows });
+        };
+
         const updateRow = (index: number, fields: any) => {
           const newRows = [...data.rows];
           newRows[index] = { ...newRows[index], ...fields };
           updateSectionData({ rows: newRows });
         };
+
         const addRow = () => {
-          updateSectionData({ rows: [...data.rows, { feature: 'New Feature', usValue: true, themValue: false }] });
+          const defaultValues = Array(headers.length - 1).fill(false);
+          updateSectionData({
+            rows: [...data.rows, { feature: 'New Feature', values: defaultValues }]
+          });
         };
+
         const removeRow = (index: number) => {
           updateSectionData({ rows: data.rows.filter((_: any, i: number) => i !== index) });
         };
@@ -437,6 +482,44 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             {(data.comparisonType === 'table' || data.comparisonType === 'both') && (
               <div className="border-t border-zinc-800 my-4 pt-4">
+                {/* Column Headers Manager */}
+                <div className="mb-4 bg-zinc-900/40 p-3 rounded border border-zinc-850">
+                  <div className="flex justify-between items-center mb-3">
+                    <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Comparison Columns</h4>
+                    <button
+                      onClick={addCompetitorColumn}
+                      className="px-2 py-0.5 bg-indigo-900/60 hover:bg-indigo-800 border border-indigo-750 text-indigo-200 text-[10px] font-bold rounded"
+                    >
+                      + Add Competitor
+                    </button>
+                  </div>
+                  <div className="space-y-2">
+                    {headers.map((header: string, hIdx: number) => (
+                      <div key={hIdx} className="flex gap-2 items-center">
+                        <span className="text-[10px] font-bold text-zinc-600 w-16">
+                          Col {hIdx + 1}:
+                        </span>
+                        <input
+                          type="text"
+                          className="flex-grow bg-zinc-950 border border-zinc-850 rounded px-2 py-1 text-xs text-zinc-250 focus:outline-none"
+                          value={header}
+                          onChange={(e) => updateHeader(hIdx, e.target.value)}
+                          disabled={hIdx === 0}
+                        />
+                        {hIdx > 1 && (
+                          <button
+                            onClick={() => removeCompetitorColumn(hIdx)}
+                            className="text-zinc-500 hover:text-rose-455 text-xs px-1"
+                            title="Remove Column"
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="flex justify-between items-center mb-3">
                   <h4 className="text-sm font-semibold text-zinc-300">Comparison Table Rows</h4>
                   <button
@@ -464,55 +547,53 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         onChange={(e) => updateRow(idx, { feature: e.target.value })}
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="block text-[10px] font-bold text-zinc-500 uppercase">Our Value</label>
-                        <select
-                          className="w-full bg-zinc-950 border border-zinc-850 rounded px-2.5 py-1 text-xs text-zinc-200 focus:outline-none"
-                          value={typeof row.usValue === 'boolean' ? (row.usValue ? 'yes' : 'no') : 'custom'}
-                          onChange={(e) => {
-                            if (e.target.value === 'yes') updateRow(idx, { usValue: true });
-                            else if (e.target.value === 'no') updateRow(idx, { usValue: false });
-                            else updateRow(idx, { usValue: 'Custom Value' });
-                          }}
-                        >
-                          <option value="yes">✓ (Yes)</option>
-                          <option value="no">✗ (No)</option>
-                          <option value="custom">Custom Text</option>
-                        </select>
-                        {typeof row.usValue !== 'boolean' && (
-                          <input
-                            type="text"
-                            className="w-full bg-zinc-955 border border-zinc-850 rounded px-2.5 py-1 mt-1 text-xs text-zinc-200 focus:outline-none"
-                            value={row.usValue}
-                            onChange={(e) => updateRow(idx, { usValue: e.target.value })}
-                          />
-                        )}
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-bold text-zinc-500 uppercase">Competitor Value</label>
-                        <select
-                          className="w-full bg-zinc-955 border border-zinc-850 rounded px-2.5 py-1 text-xs text-zinc-200 focus:outline-none"
-                          value={typeof row.themValue === 'boolean' ? (row.themValue ? 'yes' : 'no') : 'custom'}
-                          onChange={(e) => {
-                            if (e.target.value === 'yes') updateRow(idx, { themValue: true });
-                            else if (e.target.value === 'no') updateRow(idx, { themValue: false });
-                            else updateRow(idx, { themValue: 'Custom Value' });
-                          }}
-                        >
-                          <option value="yes">✓ (Yes)</option>
-                          <option value="no">✗ (No)</option>
-                          <option value="custom">Custom Text</option>
-                        </select>
-                        {typeof row.themValue !== 'boolean' && (
-                          <input
-                            type="text"
-                            className="w-full bg-zinc-955 border border-zinc-855 rounded px-2.5 py-1 mt-1 text-xs text-zinc-200 focus:outline-none"
-                            value={row.themValue}
-                            onChange={(e) => updateRow(idx, { themValue: e.target.value })}
-                          />
-                        )}
-                      </div>
+                    
+                    <div className="space-y-3 mt-2 border-t border-zinc-800/40 pt-2">
+                      {headers.slice(1).map((headerName: string, colIdx: number) => {
+                        const valIdx = colIdx;
+                        const rowValues = row.values || [
+                          row.usValue !== undefined ? row.usValue : true,
+                          row.themValue !== undefined ? row.themValue : false
+                        ];
+                        const val = rowValues[valIdx] !== undefined ? rowValues[valIdx] : false;
+
+                        return (
+                          <div key={colIdx} className="bg-zinc-950/40 p-2 rounded border border-zinc-900/60">
+                            <label className="block text-[9px] font-bold text-zinc-500 uppercase tracking-wider mb-1">
+                              {headerName} Value
+                            </label>
+                            <div className="flex gap-2 items-center">
+                              <select
+                                className="bg-zinc-900 border border-zinc-850 rounded px-2 py-1 text-xs text-zinc-200 focus:outline-none"
+                                value={typeof val === 'boolean' ? (val ? 'yes' : 'no') : 'custom'}
+                                onChange={(e) => {
+                                  const newVals = [...rowValues];
+                                  if (e.target.value === 'yes') newVals[valIdx] = true;
+                                  else if (e.target.value === 'no') newVals[valIdx] = false;
+                                  else newVals[valIdx] = 'Custom';
+                                  updateRow(idx, { values: newVals });
+                                }}
+                              >
+                                <option value="yes">✓ (Yes)</option>
+                                <option value="no">✗ (No)</option>
+                                <option value="custom">Custom Text</option>
+                              </select>
+                              {typeof val !== 'boolean' && (
+                                <input
+                                  type="text"
+                                  className="flex-grow bg-zinc-900 border border-zinc-850 rounded px-2 py-0.5 text-xs text-zinc-200 focus:outline-none"
+                                  value={val}
+                                  onChange={(e) => {
+                                    const newVals = [...rowValues];
+                                    newVals[valIdx] = e.target.value;
+                                    updateRow(idx, { values: newVals });
+                                  }}
+                                />
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
