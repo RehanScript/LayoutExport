@@ -85,27 +85,24 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
           componentsJsx += `
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 px-6 max-w-5xl mx-auto text-center flex flex-col items-center">
-        ${
-          theme === 'glassmorphism' && palette.glowColor
-            ? `<div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+        ${theme === 'glassmorphism' && palette.glowColor
+              ? `<div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
           <div className="absolute top-1/4 left-1/3 w-[350px] h-[350px] rounded-full blur-[120px] opacity-35 bg-indigo-500/30" />
         </div>`
-            : ''
-        }
-        ${
-          theme === 'linear' && palette.glowColor
-            ? `<div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+              : ''
+            }
+        ${theme === 'linear' && palette.glowColor
+              ? `<div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
           <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[600px] h-[250px] rounded-full blur-[120px] opacity-20 bg-emerald-500/20" />
         </div>`
-            : ''
-        }
-        ${
-          data.badge
-            ? `<div className="mb-6">
+              : ''
+            }
+        ${data.badge
+              ? `<div className="mb-6">
           <span className="${c.badge}">${data.badge}</span>
         </div>`
-            : ''
-        }
+              : ''
+            }
         <h1 className="${c.headingText} text-4xl md:text-6xl font-black max-w-4xl leading-tight md:leading-none mb-6">
           ${data.headline}
         </h1>
@@ -113,20 +110,18 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
           ${data.subheadline}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full sm:w-auto">
-          ${
-            data.primaryBtn?.text
+          ${data.primaryBtn?.text
               ? `<a href="${data.primaryBtn.link || '#'}" className="${c.buttonPrimary}">
             ${data.primaryBtn.text}
           </a>`
               : ''
-          }
-          ${
-            data.secondaryBtn?.text
+            }
+          ${data.secondaryBtn?.text
               ? `<a href="${data.secondaryBtn.link || '#'}" className="${c.buttonSecondary}">
             ${data.secondaryBtn.text}
           </a>`
               : ''
-          }
+            }
         </div>
       </section>
 `;
@@ -145,8 +140,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
         
         <div className="grid md:grid-cols-2 gap-6">
           ${data.items
-            .map(
-              (item: any) => `
+              .map(
+                (item: any) => `
           <div className="${c.card} p-6 flex items-start gap-4">
             <div className="flex-shrink-0 mt-1">
               <div className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-black">
@@ -157,17 +152,16 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
               <h3 className="${theme === 'neubrutalism' ? 'text-black' : 'text-zinc-100'} font-bold text-lg mb-1">
                 ${item.text}
               </h3>
-              ${
-                item.description
-                  ? `<p className="${c.globalText} text-sm">
+              ${item.description
+                    ? `<p className="${c.globalText} text-sm">
                 ${item.description}
               </p>`
-                  : ''
-              }
+                    : ''
+                  }
             </div>
           </div>`
-            )
-            .join('')}
+              )
+              .join('')}
         </div>
       </section>
 `;
@@ -185,13 +179,12 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
             ];
             const cellsHtml = rowValues.map((val: any) => `
                 <td className="${c.tableCell} text-center font-medium p-4">
-                  ${
-                    typeof val === 'boolean'
-                      ? val
-                        ? '<span className="text-emerald-500 inline-block font-black text-xl">✓</span>'
-                        : '<span className="text-rose-500 inline-block font-black text-xl">✗</span>'
-                      : `<span className="${c.globalText}">${val}</span>`
-                  }
+                  ${typeof val === 'boolean'
+                ? val
+                  ? '<span className="text-emerald-500 inline-block font-black text-xl">✓</span>'
+                  : '<span className="text-rose-500 inline-block font-black text-xl">✗</span>'
+                : `<span className="${c.globalText}">${val}</span>`
+              }
                 </td>`).join('');
 
             return `
@@ -211,9 +204,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
           ${data.subtitle ? `<p className="${c.globalText} text-lg max-w-xl mx-auto">${data.subtitle}</p>` : ''}
         </div>
 
-        ${
-          data.comparisonType === 'table' || data.comparisonType === 'both'
-            ? `<div className="overflow-x-auto mb-12">
+        ${data.comparisonType === 'table' || data.comparisonType === 'both'
+              ? `<div className="overflow-x-auto mb-12">
           <table className="w-full border-collapse">
             <thead>
               <tr>
@@ -225,15 +217,14 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
             </tbody>
           </table>
         </div>`
-            : ''
-        }
+              : ''
+            }
 
-        ${
-          data.comparisonType === 'cards' || data.comparisonType === 'both'
-            ? `<div className="grid md:grid-cols-3 gap-6">
+        ${data.comparisonType === 'cards' || data.comparisonType === 'both'
+              ? `<div className="grid md:grid-cols-3 gap-6">
           ${data.cards
-            .map(
-              (card: any) => `
+                .map(
+                  (card: any) => `
           <div className="${c.card} p-6">
             <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400 mb-4">
               ${getIconString(card.icon)}
@@ -245,11 +236,11 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
               ${card.description}
             </p>
           </div>`
-            )
-            .join('')}
+                )
+                .join('')}
         </div>`
-            : ''
-        }
+              : ''
+            }
       </section>
 `;
           break;
@@ -268,8 +259,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
 
         <div className="grid md:grid-cols-3 gap-8">
           ${data.items
-            .map(
-              (feat: any) => `
+              .map(
+                (feat: any) => `
           <div className="${c.card} p-6 transition-all hover:-translate-y-1 duration-200">
             <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 mb-6 border border-emerald-500/20">
               ${getIconString(feat.icon)}
@@ -281,8 +272,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
               ${feat.description}
             </p>
           </div>`
-            )
-            .join('')}
+              )
+              .join('')}
         </div>
       </section>
 `;
@@ -301,21 +292,20 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
           ${data.plans
-            .map((plan: any) => {
-              const popularClass = plan.isPopular
-                ? theme === 'neubrutalism'
-                  ? 'border-4 border-yellow-500 shadow-[6px_6px_0px_rgba(0,0,0,1)] ring-2 ring-black bg-white scale-105'
-                  : 'border-2 border-indigo-500 scale-105 ring-4 ring-indigo-500/10'
-                : '';
-              return `
+              .map((plan: any) => {
+                const popularClass = plan.isPopular
+                  ? theme === 'neubrutalism'
+                    ? 'border-4 border-yellow-500 shadow-[6px_6px_0px_rgba(0,0,0,1)] ring-2 ring-black bg-white scale-105'
+                    : 'border-2 border-indigo-500 scale-105 ring-4 ring-indigo-500/10'
+                  : '';
+                return `
           <div className="${c.card} ${popularClass} p-8 flex flex-col justify-between relative">
-            ${
-              plan.isPopular
-                ? `<span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 text-xs font-bold tracking-widest text-white bg-indigo-500 uppercase rounded-full">
+            ${plan.isPopular
+                    ? `<span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 text-xs font-bold tracking-widest text-white bg-indigo-500 uppercase rounded-full">
               Popular
             </span>`
-                : ''
-            }
+                    : ''
+                  }
             <div>
               <h3 className="${theme === 'neubrutalism' ? 'text-black' : 'text-zinc-100'} font-extrabold text-xl mb-2">
                 ${plan.name}
@@ -331,14 +321,14 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
 
               <ul className="space-y-3 mb-8 text-left">
                 ${plan.features
-                  .map(
-                    (f: string) => `
+                    .map(
+                      (f: string) => `
                 <li className="flex items-start gap-2.5 text-sm">
                   <span className="text-emerald-500 font-bold mt-0.5">✓</span>
                   <span className="${theme === 'neubrutalism' ? 'text-black' : 'text-zinc-300'}">${f}</span>
                 </li>`
-                  )
-                  .join('')}
+                    )
+                    .join('')}
               </ul>
             </div>
 
@@ -346,8 +336,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
               ${plan.buttonText}
             </a>
           </div>`;
-            })
-            .join('')}
+              })
+              .join('')}
         </div>
       </section>
 `;
@@ -385,22 +375,22 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           ${data.items
-            .map(
-              (test: any) => `
+              .map(
+                (test: any) => `
           <div className="${c.card} p-6 flex flex-col justify-between text-left">
             <div>
               {/* Star Rating */}
               <div className="flex gap-1 mb-4 text-amber-400">
                 ${Array.from({ length: 5 })
-                  .map(
-                    () => `
+                    .map(
+                      () => `
                 <span>
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 </span>`
-                  )
-                  .join('')}
+                    )
+                    .join('')}
               </div>
               <p className="${theme === 'neubrutalism' ? 'text-black' : 'text-zinc-200'} text-sm italic mb-6 leading-relaxed">
                 "${test.feedback}"
@@ -423,8 +413,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
               </div>
             </div>
           </div>`
-            )
-            .join('')}
+              )
+              .join('')}
         </div>
       </section>
 `;
@@ -443,8 +433,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
 
         <div className="space-y-4 text-left">
           ${data.items
-            .map(
-              (faq: any, idx: number) => `
+              .map(
+                (faq: any, idx: number) => `
           <div className="${c.faqItem}">
             <button
               className="w-full flex justify-between items-center text-left py-2 font-bold text-base focus:outline-none"
@@ -453,9 +443,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
               <span className="${theme === 'neubrutalism' ? 'text-black font-black' : 'text-zinc-100'}">
                 ${faq.question}
               </span>
-              <span className="${
-                theme === 'neubrutalism' ? 'text-black' : 'text-zinc-400'
-              } font-bold transition-transform duration-200 \${activeFaq === ${idx} ? 'rotate-180' : ''}">
+              <span className="${theme === 'neubrutalism' ? 'text-black' : 'text-zinc-400'
+                  } font-bold transition-transform duration-200 \${activeFaq === ${idx} ? 'rotate-180' : ''}">
                 ▼
               </span>
             </button>
@@ -463,8 +452,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
               ${faq.answer}
             </div>
           </div>`
-            )
-            .join('')}
+              )
+              .join('')}
         </div>
       </section>
 `;
@@ -479,9 +468,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
             <img
               src="${data.avatarUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${data.name}`}"
               alt="${data.name}"
-              className="w-32 h-32 md:w-40 md:h-40 object-cover ${
-                theme === 'neubrutalism' ? 'border-4 border-black rounded-none shadow-neubrutalism-sm' : 'border-2 border-zinc-700 rounded-2xl'
-              }"
+              className="w-32 h-32 md:w-40 md:h-40 object-cover ${theme === 'neubrutalism' ? 'border-4 border-black rounded-none shadow-neubrutalism-sm' : 'border-2 border-zinc-700 rounded-2xl'
+            }"
             />
           </div>
 
@@ -495,27 +483,24 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
             </p>
 
             <div className="flex justify-center md:justify-start gap-4">
-              ${
-                data.twitterUrl
-                  ? `<a href="${data.twitterUrl}" target="_blank" rel="noreferrer" className="hover:text-sky-400 transition-colors">
+              ${data.twitterUrl
+              ? `<a href="${data.twitterUrl}" target="_blank" rel="noreferrer" className="hover:text-sky-400 transition-colors">
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               </a>`
-                  : ''
-              }
-              ${
-                data.githubUrl
-                  ? `<a href="${data.githubUrl}" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
+              : ''
+            }
+              ${data.githubUrl
+              ? `<a href="${data.githubUrl}" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.577.688.479C19.138 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
               </a>`
-                  : ''
-              }
-              ${
-                data.linkedinUrl
-                  ? `<a href="${data.linkedinUrl}" target="_blank" rel="noreferrer" className="hover:text-blue-400 transition-colors">
+              : ''
+            }
+              ${data.linkedinUrl
+              ? `<a href="${data.linkedinUrl}" target="_blank" rel="noreferrer" className="hover:text-blue-400 transition-colors">
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
               </a>`
-                  : ''
-              }
+              : ''
+            }
             </div>
           </div>
         </div>
@@ -541,9 +526,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({ config, isOpen, onClos
             ${data.links
               .map(
                 (link: any) => `
-            <a href="${link.href || '#'}" className="${
-                  theme === 'neubrutalism' ? 'text-black font-black hover:underline' : 'text-zinc-400 hover:text-zinc-200'
-                } transition-all">
+            <a href="${link.href || '#'}" className="${theme === 'neubrutalism' ? 'text-black font-black hover:underline' : 'text-zinc-400 hover:text-zinc-200'
+                  } transition-all">
               ${link.label}
             </a>`
               )
@@ -673,7 +657,7 @@ module.exports = {
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-zinc-950 border border-zinc-850 rounded-xl w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-        
+
         {/* Modal Header */}
         <div className="p-4 border-b border-zinc-900 flex justify-between items-center bg-zinc-900/20">
           <div>
@@ -692,21 +676,19 @@ module.exports = {
         <div className="flex border-b border-zinc-900 bg-zinc-950 px-4">
           <button
             onClick={() => setActiveTab('code')}
-            className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${
-              activeTab === 'code'
+            className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${activeTab === 'code'
                 ? 'border-indigo-500 text-white'
                 : 'border-transparent text-zinc-500 hover:text-zinc-350'
-            }`}
+              }`}
           >
             1. Component Code (TSX)
           </button>
           <button
             onClick={() => setActiveTab('styles')}
-            className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${
-              activeTab === 'styles'
+            className={`px-4 py-2.5 text-xs font-bold border-b-2 transition-all ${activeTab === 'styles'
                 ? 'border-indigo-500 text-white'
                 : 'border-transparent text-zinc-500 hover:text-zinc-350'
-            }`}
+              }`}
           >
             2. Tailwind Config / Styles (CSS)
           </button>
@@ -736,11 +718,10 @@ module.exports = {
             <>
               <button
                 onClick={handleCopyCode}
-                className={`px-5 py-2.5 font-bold text-xs rounded transition-all flex items-center justify-center gap-1.5 ${
-                  copiedCode
+                className={`px-5 py-2.5 font-bold text-xs rounded transition-all flex items-center justify-center gap-1.5 ${copiedCode
                     ? 'bg-emerald-600 text-white'
                     : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-200'
-                }`}
+                  }`}
               >
                 {copiedCode ? 'Copied to Clipboard! ✓' : 'Copy Code'}
               </button>
@@ -765,11 +746,10 @@ module.exports = {
           ) : (
             <button
               onClick={handleCopyStyles}
-              className={`px-5 py-2.5 font-bold text-xs rounded transition-all flex items-center justify-center gap-1.5 ${
-                copiedStyles
+              className={`px-5 py-2.5 font-bold text-xs rounded transition-all flex items-center justify-center gap-1.5 ${copiedStyles
                   ? 'bg-emerald-600 text-white'
                   : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-200'
-              }`}
+                }`}
             >
               {copiedStyles ? 'Styles Copied! ✓' : 'Copy Styling Config'}
             </button>
